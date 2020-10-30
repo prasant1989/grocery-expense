@@ -21,8 +21,19 @@ export default function Product() {
 		if (!name | !unit) {
 			setError(true);
 		} else {
-			setError(false);
-			trySubmit(true);
+			let data = {
+				method: "POST",
+				body: JSON.stringify({
+					catalog: { name: name, unit: unit, price: price },
+				}),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			};
+			return fetch("http://192.168.43.91:3000/catalogs", data)
+				.then((response) => response.json())
+				.then((json) => setError(false));
 		}
 	};
 
@@ -46,13 +57,6 @@ export default function Product() {
 					<Text style={styles.req}>* required</Text>
 				)}
 
-				<Text style={styles.label}>Name *</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setName(text)}
-					value={name}
-				/>
-
 				<Text style={styles.label}>Unit *</Text>
 				<DropDownPicker
 					items={[
@@ -60,11 +64,18 @@ export default function Product() {
 						{ label: "Litre", value: "L" },
 						{ label: "Unit", value: "UNIT" },
 					]}
-					defaultValue="KG"
 					containerStyle={{ height: 40 }}
 					style={{ backgroundColor: "#fafafa" }}
-					dropDownStyle={{ backgroundColor: "#fafafa" }}
+					dropDownStyle={{ backgroundColor: "#fafafa", marginTop: 2 }}
 					onChangeItem={(item) => setUnit(item.value)}
+					placeholder="Select an unit"
+					placeholderStyle={{ fontWeight: "bold" }}
+				/>
+				<Text style={styles.label}>Name *</Text>
+				<TextInput
+					style={styles.input}
+					onChangeText={(text) => setName(text)}
+					value={name}
 				/>
 
 				<Text style={styles.label}>Price</Text>
@@ -110,13 +121,6 @@ const styles = StyleSheet.create({
 		fontFamily: "OpenSans",
 		paddingTop: 10,
 		fontStyle: "italic",
-	},
-	multi: {
-		borderColor: "black",
-		borderWidth: 1,
-		fontSize: 16,
-		fontFamily: "OpenSans",
-		width: 300,
 	},
 	button: {
 		marginLeft: "auto",
