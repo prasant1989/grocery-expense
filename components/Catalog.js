@@ -1,18 +1,47 @@
 import React, { useEffect, useState } from "react";
 import {
 	StyleSheet,
-	Text,
 	SafeAreaView,
-	FlatList,
 	ActivityIndicator,
 	ScrollView,
 	RefreshControl,
+	TouchableOpacity,
+	Alert,
+	View,
+	Text,
 } from "react-native";
-import { Fragment } from "react/cjs/react.production.min";
+import { Table, Row, Rows } from "react-native-table-component";
 export default function Catalogpage() {
 	const [refreshing, setRefreshing] = React.useState(false);
 	const [dataLoading, finishLoading] = useState(true);
 	const [allCatalogData, setAllCatalogData] = useState([]);
+	const tableHead = ["Item", "Unit", "Price", "Edit", "Delete"];
+
+	useEffect(() => {
+		fetch("http://192.168.43.91:3000/catalogs")
+			.then((response) => response.json())
+			.then((json) => setAllCatalogData(json.catalogs))
+			.catch((error) => console.error(error))
+			.finally(() => finishLoading(false));
+	}, []);
+
+	const alertIndex = (index) => Alert.alert(`This is row ${index + 1}`);
+
+	const edit_catalog = (data, index) => (
+		<TouchableOpacity onPress={() => alertIndex(index)}>
+			<View style={styles.btn}>
+				<Text style={styles.btnText}>Edit</Text>
+			</View>
+		</TouchableOpacity>
+	);
+
+	const delete_catalog = (data, index) => (
+		<TouchableOpacity onPress={() => alertIndex(index)}>
+			<View style={styles.btn}>
+				<Text style={styles.btnText}>Delete</Text>
+			</View>
+		</TouchableOpacity>
+	);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -21,13 +50,6 @@ export default function Catalogpage() {
 			.then((json) => setAllCatalogData(json.catalogs))
 			.catch((error) => console.error(error))
 			.finally(() => setRefreshing(false));
-	}, []);
-	useEffect(() => {
-		fetch("http://192.168.43.91:3000/catalogs")
-			.then((response) => response.json())
-			.then((json) => setAllCatalogData(json.catalogs))
-			.catch((error) => console.error(error))
-			.finally(() => finishLoading(false));
 	}, []);
 
 	return (
@@ -44,18 +66,27 @@ export default function Catalogpage() {
 						/>
 					}
 				>
-					<FlatList
-						data={allCatalogData}
-						renderItem={({ item }) => (
-							<Fragment>
-								<Text style={styles.blurb}>
-									{item.name}({item.unit}) - {item.price}/-
-									{item.created_at}
-								</Text>
-							</Fragment>
-						)}
-						keyExtractor={(item) => item.name}
-					/>
+					<Table
+						borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}
+					>
+						<Row
+							data={tableHead}
+							style={styles.head}
+							textStyle={styles.text}
+						/>
+						<Rows
+							data={allCatalogData.map(function (catalog, index) {
+								return [
+									catalog.name,
+									catalog.unit,
+									catalog.price,
+									edit_catalog(catalog.id, index),
+									delete_catalog(catalog.id, index),
+								];
+							})}
+							textStyle={styles.text}
+						/>
+					</Table>
 				</ScrollView>
 			)}
 		</SafeAreaView>
@@ -65,41 +96,13 @@ export default function Catalogpage() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		padding: 16,
+		paddingTop: 20,
 		backgroundColor: "#fff",
-		alignItems: "center",
 	},
-	button: {
-		padding: 20,
-		alignItems: "flex-start",
-		justifyContent: "center",
-	},
-	buttontext: {
-		fontFamily: "OpenSans",
-		fontWeight: "bold",
-	},
-	storyimage: {
-		height: 300,
-		width: "100%",
-	},
-	title: {
-		fontFamily: "OpenSans",
-		fontWeight: "bold",
-		fontSize: 20,
-		padding: 20,
-	},
-	blurb: {
-		fontFamily: "OpenSans",
-		fontSize: 14,
-		padding: 20,
-		fontStyle: "italic",
-	},
-	content: {
-		flex: 1,
-		fontFamily: "OpenSans",
-		fontSize: 16,
-		paddingTop: 30,
-		paddingBottom: 100,
-		paddingLeft: 20,
-		paddingRight: 20,
-	},
+	head: { height: 30, backgroundColor: "#808B97" },
+	text: { margin: 6 },
+	row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
+	btn: { width: 45, height: 18, backgroundColor: "#78B7BB", borderRadius: 2 },
+	btnText: { textAlign: "center", color: "#fff" },
 });

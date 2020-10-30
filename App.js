@@ -33,7 +33,7 @@ export default function App() {
 				}}
 				ref={navigationRef}
 			>
-				<Stack.Navigator initialRouteName="Catalog" headerMode="screen">
+				<Stack.Navigator initialRouteName="About" headerMode="screen">
 					<Stack.Screen
 						name="Mohanty"
 						component={Homepage}
