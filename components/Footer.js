@@ -7,7 +7,7 @@ export default function Footer() {
 		<View style={styles.footer}>
 			<TouchableOpacity
 				style={styles.button}
-				onPress={() => RootNavigation.navigate("Globomantics")}
+				onPress={() => RootNavigation.navigate("Mohanty")}
 			>
 				<Text>Home</Text>
 			</TouchableOpacity>

@@ -35,11 +35,11 @@ export default function App() {
 			>
 				<Stack.Navigator initialRouteName="Catalog" headerMode="screen">
 					<Stack.Screen
-						name="Globomantics"
+						name="Mohanty"
 						component={Homepage}
 						options={{
 							header: () => (
-								<Header headerDisplay="Globomantics" />
+								<Header headerDisplay="Mohanty Store" />
 							),
 						}}
 					/>
@@ -55,7 +55,7 @@ export default function App() {
 						component={AboutGlobo}
 						options={{
 							header: () => (
-								<Header headerDisplay="About Globomantics" />
+								<Header headerDisplay="Mohanty Store" />
 							),
 						}}
 					/>
