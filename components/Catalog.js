@@ -10,6 +10,7 @@ import {
 	View,
 	Text,
 } from "react-native";
+import { set } from "react-native-reanimated";
 import { Table, Row, Rows } from "react-native-table-component";
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -20,6 +21,7 @@ export default function Catalogpage({ navigation }) {
 	const tableHead = ["Item", "Unit", "Price", "Action"];
 	let isRendered = useRef(false);
 	useEffect(() => {
+		setLoading(true);
 		isRendered = true;
 		fetch("http://192.168.43.91:3000/catalogs")
 			.then((response) => response.json())
@@ -37,7 +39,7 @@ export default function Catalogpage({ navigation }) {
 		return () => {
 			isRendered = false;
 		};
-	});
+	}, []);
 
 	const alertIndex = (data, type) =>
 		Alert.alert(
