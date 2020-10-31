@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
 	StyleSheet,
 	SafeAreaView,
@@ -11,37 +11,121 @@ import {
 	Text,
 } from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
-export default function Catalogpage() {
-	const [refreshing, setRefreshing] = React.useState(false);
-	const [dataLoading, finishLoading] = useState(true);
-	const [allCatalogData, setAllCatalogData] = useState([]);
-	const tableHead = ["Item", "Unit", "Price", "Edit", "Delete"];
+import Icon from "react-native-vector-icons/FontAwesome";
 
+export default function Catalogpage({ navigation }) {
+	const [refreshing, setRefreshing] = useState(false);
+	const [allCatalogData, setAllCatalogData] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const tableHead = ["Item", "Unit", "Price", "Action"];
+	let isRendered = useRef(false);
 	useEffect(() => {
+		isRendered = true;
 		fetch("http://192.168.43.91:3000/catalogs")
 			.then((response) => response.json())
-			.then((json) => setAllCatalogData(json.catalogs))
+			.then((json) => {
+				if (isRendered) {
+					setAllCatalogData(json.catalogs);
+				}
+			})
 			.catch((error) => console.error(error))
-			.finally(() => finishLoading(false));
-	}, []);
+			.finally(() => {
+				if (isRendered) {
+					setLoading(false);
+				}
+			});
+		return () => {
+			isRendered = false;
+		};
+	});
 
-	const alertIndex = (index) => Alert.alert(`This is row ${index + 1}`);
+	const alertIndex = (data, type) =>
+		Alert.alert(
+			`Item - ${data.name}`,
+			`Id - ${data.id}\nName - ${data.name}\n`,
+			[
+				{
+					text: "Cancel",
+					onPress: () => {},
+					style: "cancel",
+				},
+				{
+					text: type,
+					onPress: () =>
+						type === "edit"
+							? editCatalog(data)
+							: deleteCatalog(data.id),
+				},
+			],
+			{ cancelable: false }
+		);
 
-	const edit_catalog = (data, index) => (
-		<TouchableOpacity onPress={() => alertIndex(index)}>
-			<View style={styles.btn}>
-				<Text style={styles.btnText}>Edit</Text>
+	const catalog_data = (data) => (
+		<TouchableOpacity>
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: "space-between",
+					flexWrap: "wrap",
+					alignItems: "center",
+				}}
+			>
+				<View style={{ flex: 1 }}>
+					<Icon
+						onPress={() => alertIndex(data, "edit")}
+						padding={30}
+						name="edit"
+					/>
+				</View>
+				<View style={{ flex: 1 }}>
+					<Icon
+						name="trash-o"
+						onPress={() => alertIndex(data, "delete")}
+					/>
+				</View>
 			</View>
 		</TouchableOpacity>
 	);
 
-	const delete_catalog = (data, index) => (
-		<TouchableOpacity onPress={() => alertIndex(index)}>
-			<View style={styles.btn}>
-				<Text style={styles.btnText}>Delete</Text>
-			</View>
-		</TouchableOpacity>
-	);
+	const editCatalog = (data) => {
+		navigation.navigate("Product", data);
+	};
+
+	const deleteCatalog = (id) => {
+		setLoading(true);
+		let data = {
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+		};
+		return fetch("http://192.168.43.91:3000/catalogs/" + id, data)
+			.then((response) => {
+				if (response.status === 200 || response.status === 204) {
+					return Promise.resolve();
+				}
+				return Promise.resolve(response.json()).then(
+					(responseInJson) => {
+						return Promise.reject(responseInJson.error);
+					}
+				);
+			})
+			.then(
+				(result) => {
+					onRefresh();
+				},
+				(error) => {
+					console.log("Error: ", error);
+				}
+			)
+			.catch((catchError) => {
+				console.log("Catch: ", catchError);
+			})
+			.finally(() => {
+				setLoading(false);
+			});
+	};
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -54,8 +138,8 @@ export default function Catalogpage() {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			{dataLoading ? (
-				<ActivityIndicator />
+			{loading ? (
+				<ActivityIndicator size="large" color="#3A773F" />
 			) : (
 				<ScrollView
 					scrollEnabled={true}
@@ -79,9 +163,17 @@ export default function Catalogpage() {
 								return [
 									catalog.name,
 									catalog.unit,
-									catalog.price,
-									edit_catalog(catalog.id, index),
-									delete_catalog(catalog.id, index),
+									<View>
+										<Icon name="rupee">
+											<Text>{catalog.price}</Text>
+										</Icon>
+									</View>,
+									catalog_data({
+										id: catalog.id,
+										name: catalog.name,
+										price: catalog.price,
+										unit: catalog.unit,
+									}),
 								];
 							})}
 							textStyle={styles.text}
@@ -98,11 +190,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		padding: 16,
 		paddingTop: 20,
-		backgroundColor: "#fff",
+		backgroundColor: "#fcf9e8",
 	},
-	head: { height: 30, backgroundColor: "#808B97" },
+	head: { height: 30, backgroundColor: "#78B7BB" },
 	text: { margin: 6 },
-	row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
-	btn: { width: 45, height: 18, backgroundColor: "#78B7BB", borderRadius: 2 },
-	btnText: { textAlign: "center", color: "#fff" },
+	absolute: {
+		width: 100,
+		height: 100,
+		position: "absolute",
+	},
 });

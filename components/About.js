@@ -15,10 +15,7 @@ export default function AboutGlobo() {
 	return (
 		<View style={styles.container}>
 			<ScrollView>
-				<Image
-					source={imageC}
-					style={{ positionwidth: "100%", height: 300 }}
-				/>
+				<Image source={imageC} style={{ height: 300, width: "100%" }} />
 				<Text style={styles.text}>{blockA}</Text>
 				<Image source={imageB} style={{ width: "100%", height: 300 }} />
 				<Text style={styles.heading}>Leaders in our field</Text>
@@ -32,6 +29,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		// alignItems: "center",
+		position: "relative",
 	},
 	heading: {
 		fontFamily: "OpenSans",
