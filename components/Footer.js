@@ -21,7 +21,9 @@ export default function Footer() {
 
 			<TouchableOpacity
 				style={styles.button}
-				onPress={() => RootNavigation.navigate("Product")}
+				onPress={() =>
+					RootNavigation.navigate("Product", { refresh: false })
+				}
 			>
 				<Text>Product</Text>
 			</TouchableOpacity>

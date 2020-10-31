@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -8,22 +8,29 @@ import {
 	Alert,
 } from "react-native";
 
-import * as RootNavigation from "./RootNavigation";
 import CatalogForm from "./CatalogForm.js";
-export default function Product({ route }) {
-	const edit_catalog = route.params;
-	console.log("ec", edit_catalog);
+export default function Product({ navigation, route }) {
+	const edit_catalog = {
+		id: route.params?.id?.toString() || "",
+		price: route.params?.price?.toString() || "",
+		name: route.params?.name || "",
+		unit: route.params?.unit || "",
+	};
 	const [catalog, setCatalog] = useState({
 		id: "",
-		price: edit_catalog?.price?.toString() || "",
-		name: edit_catalog?.name || "",
-		unit: edit_catalog?.unit || "",
+		price: "",
+		name: "",
+		unit: "",
 	});
 
 	const [loading, setLoading] = useState(false);
 	const [submitError, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-
+	React.useEffect(() => {
+		if (edit_catalog != undefined) {
+			setCatalog(edit_catalog);
+		}
+	}, [route.params]);
 	const errorMessageDetails = () => {
 		if (!catalog.name) {
 			setErrorMessage("Item name empty / invalid !");
@@ -58,20 +65,26 @@ export default function Product({ route }) {
 				},
 				{
 					text: "View Catalog",
-					onPress: () => RootNavigation.navigate("Catalog"),
+					onPress: () => navigation.navigate("Catalog"),
 				},
 			],
 			{ cancelable: false }
 		);
 
-	const submitCatalog = () => {
+	const submitCatalog = (type) => {
+		let method = "POST";
+		let url = "http://192.168.43.91:3000/catalogs";
+		if (type == "edit") {
+			method = "PUT";
+			url = `http://192.168.43.91:3000/catalogs/${catalog.id}`;
+		}
 		if (!catalog.name | !catalog.unit | !catalog.price) {
 			errorMessageDetails();
 			setError(true);
 		} else {
 			setLoading(true);
 			let data = {
-				method: "POST",
+				method: method,
 				body: JSON.stringify({
 					catalog: {
 						name: catalog.name,
@@ -84,7 +97,7 @@ export default function Product({ route }) {
 					"Content-Type": "application/json",
 				},
 			};
-			return fetch("http://192.168.43.91:3000/catalogs", data)
+			return fetch(url, data)
 				.then((response) => {
 					if (response.status === 200 || response.status === 201) {
 						return Promise.resolve(response.json());

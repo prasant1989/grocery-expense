@@ -27,6 +27,7 @@ export default function CatalogForm(props) {
 				onChangeItem={(item) => handleUnitChange(item.value)}
 				placeholder="Select an unit"
 				placeholderStyle={{ fontWeight: "bold" }}
+				defaultValue={catalog.unit}
 			/>
 			<Text style={styles.label}>Name *</Text>
 			<TextInput
@@ -48,8 +49,10 @@ export default function CatalogForm(props) {
 			<Text style={styles.label}></Text>
 			<Button
 				style={styles.button}
-				title="Submit Product"
-				onPress={() => submitCatalog()}
+				title={catalog.id != "" ? "Update Product" : "New Product"}
+				onPress={() =>
+					submitCatalog(catalog.id != "" ? "edit" : "create")
+				}
 			/>
 		</Fragment>
 	);
