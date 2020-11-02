@@ -22,7 +22,7 @@ export default function Catalogpage({ navigation }) {
 	useEffect(() => {
 		setLoading(true);
 		isRendered = true;
-		fetch("http://192.168.43.91:3000/catalogs")
+		fetch("http://192.168.43.91:3000/catalogs?page=all")
 			.then((response) => response.json())
 			.then((json) => {
 				if (isRendered) {
@@ -130,7 +130,7 @@ export default function Catalogpage({ navigation }) {
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
-		fetch("http://192.168.43.91:3000/catalogs")
+		fetch("http://192.168.43.91:3000/catalogs?page=all")
 			.then((response) => response.json())
 			.then((json) => setAllCatalogData(json.catalogs))
 			.catch((error) => console.error(error))
