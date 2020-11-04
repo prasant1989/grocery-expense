@@ -15,7 +15,7 @@ export default function CatalogForm(props) {
 			<DropDownPicker
 				items={[
 					{ label: "Kilogram", value: "KG" },
-					{ label: "Litre", value: "L" },
+					{ label: "Litre", value: "LTR" },
 					{ label: "Unit", value: "UNIT" },
 				]}
 				containerStyle={{ height: 40 }}
@@ -34,7 +34,7 @@ export default function CatalogForm(props) {
 				style={styles.input}
 				onChangeText={(text) => handleNameChange(text)}
 				value={catalog.name}
-				placeholder="Enter item name"
+				placeholder="Enter Item Name"
 				clearTextOnFocus={true}
 			/>
 
@@ -43,11 +43,12 @@ export default function CatalogForm(props) {
 				style={styles.input}
 				onChangeText={(text) => handlePriceChange(text)}
 				value={catalog.price}
-				placeholder="Enter item price"
+				placeholder="Enter Item Price"
 				keyboardType="decimal-pad"
 			/>
 			<Text style={styles.label}></Text>
 			<Button
+				color="#00008b"
 				style={styles.button}
 				title={catalog.id != "" ? "Update Product" : "New Product"}
 				onPress={() =>
@@ -69,11 +70,13 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		height: 30,
-		borderColor: "black",
 		borderWidth: 1,
 		fontSize: 26,
 		fontFamily: "OpenSans",
 		width: 250,
+		borderRadius: 5,
+		backgroundColor: "#fafafa",
+		color: "blue",
 	},
 	label: {
 		fontSize: 18,

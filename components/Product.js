@@ -6,8 +6,9 @@ import {
 	ScrollView,
 	ActivityIndicator,
 	Alert,
+	ImageBackground,
 } from "react-native";
-
+import logo from "../assets/Bgcart.png";
 import CatalogForm from "./CatalogForm.js";
 export default function Product({ navigation, route }) {
 	const edit_catalog = {
@@ -55,8 +56,8 @@ export default function Product({ navigation, route }) {
 
 	const onSuccess = (data) =>
 		Alert.alert(
-			`Saved Item - ${data.name}`,
-			`Item - ${data.name}\nUnit - ${data.unit}\nItem - ${data.price}`,
+			`Saved Item - ${data.catalog.name}`,
+			`Item - ${data.catalog.name}\nUnit - ${data.catalog.unit}\nItem - ${data.catalog.price}`,
 			[
 				{
 					text: "New Catalog",
@@ -67,8 +68,7 @@ export default function Product({ navigation, route }) {
 					text: "View Catalog",
 					onPress: () => navigation.navigate("Catalog"),
 				},
-			],
-			{ cancelable: false }
+			]
 		);
 
 	const submitCatalog = (type) => {
@@ -134,26 +134,28 @@ export default function Product({ navigation, route }) {
 
 	return (
 		<View style={styles.container}>
-			<ScrollView>
-				{submitError ? (
-					<Text style={styles.status}>{errorMessage}</Text>
-				) : (
-					<Text style={styles.status}>
-						Please enter the Catalog Details
-					</Text>
-				)}
-				{loading ? (
-					<ActivityIndicator size="large" color="#0000ff" />
-				) : (
-					<CatalogForm
-						catalog={catalog}
-						handleNameChange={handleNameChange}
-						handlePriceChange={handlePriceChange}
-						handleUnitChange={handleUnitChange}
-						submitCatalog={submitCatalog}
-					/>
-				)}
-			</ScrollView>
+			<ImageBackground source={logo} style={{ width: 280, height: 900 }}>
+				<ScrollView>
+					{submitError ? (
+						<Text style={styles.status}>{errorMessage}</Text>
+					) : (
+						<Text style={styles.status}>
+							Please enter the Catalog Details
+						</Text>
+					)}
+					{loading ? (
+						<ActivityIndicator size="large" color="#0000ff" />
+					) : (
+						<CatalogForm
+							catalog={catalog}
+							handleNameChange={handleNameChange}
+							handlePriceChange={handlePriceChange}
+							handleUnitChange={handleUnitChange}
+							submitCatalog={submitCatalog}
+						/>
+					)}
+				</ScrollView>
+			</ImageBackground>
 		</View>
 	);
 }

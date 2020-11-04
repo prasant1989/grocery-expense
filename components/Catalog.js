@@ -75,11 +75,16 @@ export default function Catalogpage({ navigation }) {
 					<Icon
 						onPress={() => alertIndex(data, "edit")}
 						padding={30}
+						size={30}
+						color="blue"
 						name="edit"
 					/>
 				</View>
 				<View style={{ flex: 1 }}>
 					<Icon
+						padding={30}
+						size={30}
+						color="red"
 						name="trash-o"
 						onPress={() => alertIndex(data, "delete")}
 					/>
@@ -165,8 +170,8 @@ export default function Catalogpage({ navigation }) {
 									catalog.name,
 									catalog.unit,
 									<View>
-										<Icon name="rupee">
-											<Text>{catalog.price}</Text>
+										<Icon name="inr" color="#9C27B0">
+											<Text>{catalog.price}/-</Text>
 										</Icon>
 									</View>,
 									catalog_data({
@@ -194,7 +199,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fcf9e8",
 	},
 	head: { height: 30, backgroundColor: "#78B7BB" },
-	text: { margin: 6 },
+	text: { margin: 6, textAlign: "left", color: "#9C27B0" },
 	absolute: {
 		width: 100,
 		height: 100,

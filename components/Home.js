@@ -9,8 +9,9 @@ import {
 	FlatList,
 	TextInput,
 	TouchableHighlight,
+	Alert,
 } from "react-native";
-
+import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const API_ENDPOINT = "http://192.168.43.91:3000/catalogs?page=all";
@@ -63,11 +64,26 @@ export default function Homepage() {
 			// Flat List Item
 			<View style={styles.fixToText}>
 				<Text style={styles.itemStyle}>
-					{item.name.toUpperCase()}( {item.price}/- )
+					{item.name.toUpperCase()}({" "}
+					<Icon name="rupee">
+						<Text>{item.price}/- )</Text>
+					</Icon>
 				</Text>
 				<Icon
 					onPress={() => {
+						let found = cart.some(
+							(cart_item) =>
+								cart_item.name === item.name &&
+								cart_item.unit === item.unit
+						);
 						setCart(cart.concat(item));
+						if (found) {
+							Alert.alert(
+								`${item.name} is already present in cart`
+							);
+						} else {
+							setCart(cart.concat(item));
+						}
 					}}
 					name="cart-plus"
 					size={30}
@@ -97,9 +113,13 @@ export default function Homepage() {
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
+		setCart([]);
 		fetch("http://192.168.43.91:3000/catalogs?page=all")
 			.then((response) => response.json())
-			.then((json) => setMasterDataSource(json.catalogs))
+			.then((json) => {
+				setFilteredDataSource(json.catalogs);
+				setMasterDataSource(json.catalogs);
+			})
 			.catch((error) => console.error(error))
 			.finally(() => setRefreshing(false));
 	}, []);
@@ -121,11 +141,14 @@ export default function Homepage() {
 				animationType="fade"
 				transparent={true}
 				visible={modalVisible}
+				propagateSwipe={true}
 			>
-				<View style={styles.centeredView}>
+				<ScrollView contentContainerStyle={styles.contentContainer}>
 					<View style={styles.modalView}>
 						{cart.map((item, index) => (
-							<Text style={styles.modalText}>{item.name}</Text>
+							<Text key={index} style={styles.modalText}>
+								{item.name}
+							</Text>
 						))}
 
 						<TouchableHighlight
@@ -140,7 +163,7 @@ export default function Homepage() {
 							<Text style={styles.textStyle}>Submit</Text>
 						</TouchableHighlight>
 					</View>
-				</View>
+				</ScrollView>
 			</Modal>
 
 			<View style={styles.container}>
@@ -171,7 +194,7 @@ export default function Homepage() {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: "#f0f8ff",
-		borderWidth: 1,
+		// borderWidth: 1,
 		flex: 1,
 	},
 	itemStyle: {
@@ -185,20 +208,20 @@ const styles = StyleSheet.create({
 		margin: 5,
 		borderColor: "#009688",
 		backgroundColor: "#FFFFFF",
-		borderRadius: 5,
+		borderRadius: 20,
 	},
 	fixToText: {
 		flexDirection: "row",
 		paddingEnd: 20,
 		paddingStart: 10,
 	},
-	centeredView: {
-		flex: 1,
+	contentContainer: {
+		paddingVertical: 20,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	modalView: {
-		// margin: 20,
+		margin: 50,
 		backgroundColor: "white",
 		borderRadius: 20,
 		padding: "25%",
