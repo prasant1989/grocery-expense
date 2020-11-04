@@ -10,7 +10,7 @@ import { AppLoading } from "expo";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { navigationRef } from "./components/RootNavigation";
-import NewsDetail from "./components/NewsDetail";
+import CartItem from "./components/CartItem";
 import AboutGlobo from "./components/About";
 import Product from "./components/Product";
 import Catalogpage from "./components/Catalog";
@@ -44,10 +44,10 @@ export default function App() {
 						}}
 					/>
 					<Stack.Screen
-						name="NewsDetail"
-						component={NewsDetail}
+						name="CartItem"
+						component={CartItem}
 						options={{
-							header: () => <Header headerDisplay="News" />,
+							header: () => <Header headerDisplay="Cart" />,
 						}}
 					/>
 					<Stack.Screen

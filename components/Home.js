@@ -10,13 +10,23 @@ import {
 	TextInput,
 	TouchableHighlight,
 	Alert,
+	Button,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Ionicons } from "@expo/vector-icons";
+// import { CommonActions } from "@react-navigation/native";
 
 const API_ENDPOINT = "http://192.168.43.91:3000/catalogs?page=all";
 
-export default function Homepage() {
+// export const resetStackAndNavigate = (navigation) => {
+// 	navigation.dispatch(
+// 		CommonActions.navigate({
+// 			name: "Home",
+// 		})
+// 	);
+// };
+export default function Homepage({ navigation }) {
 	const [search, setSearch] = useState("");
 	const [refreshing, setRefreshing] = useState(false);
 	const [filteredDataSource, setFilteredDataSource] = useState([]);
@@ -71,12 +81,12 @@ export default function Homepage() {
 				</Text>
 				<Icon
 					onPress={() => {
-						let found = cart.some(
+						const found = cart.some(
 							(cart_item) =>
 								cart_item.name === item.name &&
 								cart_item.unit === item.unit
 						);
-						setCart(cart.concat(item));
+
 						if (found) {
 							Alert.alert(
 								`${item.name} is already present in cart`
@@ -90,12 +100,6 @@ export default function Homepage() {
 					color="brown"
 				/>
 			</View>
-			// <View>
-
-			// 	<View style={{ flex: 1 }}>
-
-			// 	</View>
-			// </View>
 		);
 	};
 
@@ -124,6 +128,22 @@ export default function Homepage() {
 			.finally(() => setRefreshing(false));
 	}, []);
 
+	function deleteCartItem(item) {
+		const found = cart.some(
+			(cart_item) =>
+				cart_item.name === item.name && cart_item.unit === item.unit
+		);
+		if (found) {
+			const filteredCart = cart.filter(
+				(cartItem) => cartItem.id !== item.id
+			);
+			if (filteredCart.length == 0) {
+				setModalVisible(false);
+			}
+			setCart(filteredCart);
+		}
+	}
+
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<Icon
@@ -132,7 +152,9 @@ export default function Homepage() {
 				color="brown"
 				style={{ textAlign: "right" }}
 				onPress={() => {
-					setModalVisible(true);
+					if (cart.length != 0) {
+						setModalVisible(true);
+					}
 				}}
 			>
 				<Text>{cart.length}</Text>
@@ -146,8 +168,17 @@ export default function Homepage() {
 				<ScrollView contentContainerStyle={styles.contentContainer}>
 					<View style={styles.modalView}>
 						{cart.map((item, index) => (
-							<Text key={index} style={styles.modalText}>
-								{item.name}
+							<Text
+								onPress={() => deleteCartItem(item)}
+								key={index}
+								style={styles.modalText}
+							>
+								{item.name}{" "}
+								<Ionicons
+									name="md-remove-circle"
+									size={24}
+									color="brown"
+								/>
 							</Text>
 						))}
 
@@ -160,7 +191,17 @@ export default function Homepage() {
 								setModalVisible(!modalVisible);
 							}}
 						>
-							<Text style={styles.textStyle}>Submit</Text>
+							<Text
+								onPress={() => {
+									setModalVisible(false);
+									navigation.navigate("CartItem", {
+										items: cart,
+									});
+								}}
+								style={styles.textStyle}
+							>
+								Submit
+							</Text>
 						</TouchableHighlight>
 					</View>
 				</ScrollView>
@@ -224,7 +265,7 @@ const styles = StyleSheet.create({
 		margin: 50,
 		backgroundColor: "white",
 		borderRadius: 20,
-		padding: "25%",
+		padding: 40,
 		alignItems: "center",
 		shadowColor: "#000",
 		shadowOffset: {
@@ -234,6 +275,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.25,
 		shadowRadius: 3.84,
 		elevation: 5,
+		textAlign: "left",
 	},
 	openButton: {
 		backgroundColor: "#F194FF",
@@ -248,6 +290,7 @@ const styles = StyleSheet.create({
 	},
 	modalText: {
 		marginBottom: 10,
-		// textAlign: "center",
+		fontSize: 20,
+		textAlign: "left",
 	},
 });

@@ -76,8 +76,8 @@ export default function Catalogpage({ navigation }) {
 						onPress={() => alertIndex(data, "edit")}
 						padding={30}
 						size={30}
-						color="blue"
-						name="edit"
+						color="black"
+						name="pencil-square"
 					/>
 				</View>
 				<View style={{ flex: 1 }}>
@@ -85,7 +85,7 @@ export default function Catalogpage({ navigation }) {
 						padding={30}
 						size={30}
 						color="red"
-						name="trash-o"
+						name="minus-circle"
 						onPress={() => alertIndex(data, "delete")}
 					/>
 				</View>
