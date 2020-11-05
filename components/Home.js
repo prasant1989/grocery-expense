@@ -15,6 +15,8 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+
 // import { CommonActions } from "@react-navigation/native";
 
 const API_ENDPOINT = "http://192.168.43.91:3000/catalogs?page=all";
@@ -33,7 +35,8 @@ export default function Homepage({ navigation }) {
 	const [masterDataSource, setMasterDataSource] = useState([]);
 	const [cart, setCart] = useState([]);
 	const [modalVisible, setModalVisible] = useState(false);
-
+	const isFocused = useIsFocused();
+	console.log("Home Focused", isFocused);
 	useEffect(() => {
 		fetch(API_ENDPOINT)
 			.then((response) => response.json())
@@ -195,7 +198,11 @@ export default function Homepage({ navigation }) {
 								onPress={() => {
 									setModalVisible(false);
 									navigation.navigate("CartItem", {
-										items: cart,
+										items: cart.map((cart) => ({
+											...cart,
+											qty: 1,
+											checked: 1,
+										})),
 									});
 								}}
 								style={styles.textStyle}

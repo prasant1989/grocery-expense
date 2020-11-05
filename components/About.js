@@ -11,7 +11,7 @@ const blockB = `
     We are the leaders of B2C
 `;
 
-export default function AboutGlobo() {
+export default function About() {
 	return (
 		<View style={styles.container}>
 			<ScrollView>

@@ -11,7 +11,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { navigationRef } from "./components/RootNavigation";
 import CartItem from "./components/CartItem";
-import AboutGlobo from "./components/About";
+import About from "./components/About";
 import Product from "./components/Product";
 import Catalogpage from "./components/Catalog";
 
@@ -33,7 +33,13 @@ export default function App() {
 				}}
 				ref={navigationRef}
 			>
-				<Stack.Navigator initialRouteName="About" headerMode="screen">
+				<Stack.Navigator
+					initialRouteName="About"
+					headerMode="screen"
+					screenOptions={{
+						headerStyle: { backgroundColor: "green" },
+					}}
+				>
 					<Stack.Screen
 						name="Mohanty"
 						component={Homepage}
@@ -48,11 +54,12 @@ export default function App() {
 						component={CartItem}
 						options={{
 							header: () => <Header headerDisplay="Cart" />,
+							title: "Shopping Cart",
 						}}
 					/>
 					<Stack.Screen
 						name="About"
-						component={AboutGlobo}
+						component={About}
 						options={{
 							header: () => (
 								<Header headerDisplay="Mohanty Store" />
