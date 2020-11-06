@@ -14,8 +14,7 @@ import CartItem from "./components/CartItem";
 import About from "./components/About";
 import Product from "./components/Product";
 import Catalogpage from "./components/Catalog";
-global.API_URL = "https://powerful-shelf-47496.herokuapp.com/";
-// global.API_URL = "http://192.168.43.91:3000/catalogs/";
+// global.API_URL = "http://192.168.43.91:3000/";
 
 const Stack = createStackNavigator();
 export default function App() {

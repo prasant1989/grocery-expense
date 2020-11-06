@@ -72,10 +72,10 @@ export default function Product({ navigation, route }) {
 
 	const submitCatalog = (type) => {
 		let method = "POST";
-		let url = `${API_URL}catalogs`;
+		let url = `https://powerful-shelf-47496.herokuapp.com/catalogs`;
 		if (type == "edit") {
 			method = "PUT";
-			url = `${API_URL}catalogs/${catalog.id}`;
+			url = `https://powerful-shelf-47496.herokuapp.com/catalogs/${catalog.id}`;
 		}
 		if (!catalog.name | !catalog.unit | !catalog.price) {
 			errorMessageDetails();

@@ -37,7 +37,6 @@ export default function CartItem({ navigation, route }) {
 
 		newItems[index]["checked"] = value == 1 ? 0 : 1; // set the new value
 		setCartItems(newItems); // set new state
-		console.log(cartItems);
 	};
 
 	const selectHandlerAll = (value) => {
@@ -76,7 +75,6 @@ export default function CartItem({ navigation, route }) {
 	};
 
 	const quantityHandler = (value, index) => {
-		console.log(value);
 		if (value.match(/^[\d\.]+$/)) {
 			const newItems = [...cartItems]; // clone the array
 			newItems[index]["qty"] = value;
