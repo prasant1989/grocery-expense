@@ -23,7 +23,6 @@ export default function Product({ navigation, route }) {
 		name: "",
 		unit: "",
 	});
-
 	const [loading, setLoading] = useState(false);
 	const [submitError, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
@@ -73,10 +72,10 @@ export default function Product({ navigation, route }) {
 
 	const submitCatalog = (type) => {
 		let method = "POST";
-		let url = "http://192.168.43.91:3000/catalogs";
+		let url = `${API_URL}catalogs`;
 		if (type == "edit") {
 			method = "PUT";
-			url = `http://192.168.43.91:3000/catalogs/${catalog.id}`;
+			url = `${API_URL}catalogs/${catalog.id}`;
 		}
 		if (!catalog.name | !catalog.unit | !catalog.price) {
 			errorMessageDetails();

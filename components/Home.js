@@ -18,8 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 
 // import { CommonActions } from "@react-navigation/native";
-
-const API_ENDPOINT = "http://192.168.43.91:3000/catalogs?page=all";
+const API_ENDPOINT = `${API_URL}catalogs?page=all`;
 
 // export const resetStackAndNavigate = (navigation) => {
 // 	navigation.dispatch(
@@ -121,7 +120,7 @@ export default function Homepage({ navigation }) {
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		setCart([]);
-		fetch("http://192.168.43.91:3000/catalogs?page=all")
+		fetch(`${API_URL}catalogs?page=all`)
 			.then((response) => response.json())
 			.then((json) => {
 				setFilteredDataSource(json.catalogs);
