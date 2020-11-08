@@ -8,7 +8,7 @@ export default function Footer() {
 		<View style={styles.footer}>
 			<TouchableOpacity
 				style={styles.button}
-				onPress={() => RootNavigation.navigate("Mohanty")}
+				onPress={() => RootNavigation.navigate("Home")}
 			>
 				<Icon name="home" size={30} color="blue"></Icon>
 				<Text>Home</Text>
@@ -34,6 +34,13 @@ export default function Footer() {
 
 			<TouchableOpacity
 				style={styles.button}
+				onPress={() => RootNavigation.navigate("Order")}
+			>
+				<Icon name="gift" size={30} color="blue"></Icon>
+				<Text>Order </Text>
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={styles.button}
 				onPress={() => RootNavigation.navigate("Catalog")}
 			>
 				<Icon name="gift" size={30} color="blue"></Icon>
@@ -55,6 +62,6 @@ const styles = StyleSheet.create({
 		// margin: 1,
 	},
 	button: {
-		padding: 28,
+		padding: 20,
 	},
 });

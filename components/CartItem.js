@@ -77,12 +77,12 @@ export default function CartItem({ navigation, route }) {
 	const quantityHandler = (value, index) => {
 		if (value.match(/^[\d\.]+$/)) {
 			const newItems = [...cartItems]; // clone the array
-			newItems[index]["qty"] = value;
+			newItems[index]["quantity"] = value;
 			setCartItems(newItems); // set new state
 		} else {
 			console.log("No Match");
 			const newItems = [...cartItems]; // clone the array
-			newItems[index]["qty"] = 0;
+			newItems[index]["quantity"] = 0;
 			setCartItems(newItems); // set new state
 		}
 	};
@@ -91,11 +91,63 @@ export default function CartItem({ navigation, route }) {
 		if (cartItems) {
 			return cartItems.reduce(
 				(sum, item) =>
-					sum + (item.checked == 1 ? item.qty * item.price : 0),
+					sum + (item.checked == 1 ? item.quantity * item.price : 0),
 				0
 			);
 		}
 		return 0;
+	};
+
+	const placeOrder = () => {
+		console.log("myCart", cartItems);
+		setCartItemsIsLoading(true);
+		let method = "POST";
+		let url = "https://powerful-shelf-47496.herokuapp.com/orders";
+		let data = {
+			method: method,
+			body: JSON.stringify({
+				order: {
+					status: 0,
+					order_details_attributes: cartItems.map((item) => ({
+						item_name: item.name,
+						quantity: item.quantity,
+						price: item.price,
+						catalog_id: item.id,
+						unit: item.unit,
+					})),
+				},
+			}),
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+		};
+		return fetch(url, data)
+			.then((response) => {
+				if (response.status === 200 || response.status === 201) {
+					return Promise.resolve(response.json());
+				}
+				return Promise.resolve(response.json()).then(
+					(responseInJson) => {
+						return Promise.reject(responseInJson.error);
+					}
+				);
+			})
+			.then(
+				(result) => {
+					console.log("Success: ", result);
+					navigation.navigate("Order");
+				},
+				(error) => {
+					console.log("Error: ", error);
+				}
+			)
+			.catch((catchError) => {
+				console.log("Catch: ", catchError);
+			})
+			.finally(() => {
+				setCartItemsIsLoading(false);
+			});
 	};
 
 	return (
@@ -132,7 +184,7 @@ export default function CartItem({ navigation, route }) {
 									borderRadius: 5,
 								},
 							]}
-							onPress={() => console.log("test")}
+							onPress={() => placeOrder()}
 						>
 							<Text style={{ color: "#ffffff" }}>
 								Place Order
@@ -235,7 +287,7 @@ export default function CartItem({ navigation, route }) {
 											<Icon name="inr" color="#9C27B0">
 												{" "}
 												{(
-													item.qty * item.price
+													item.quantity * item.price
 												).toFixed(2)}
 											</Icon>
 										</Text>
@@ -254,7 +306,7 @@ export default function CartItem({ navigation, route }) {
 													fontSize: 13,
 												}}
 											>
-												{item.qty}
+												{item.quantity}
 											</TextInput>
 										</View>
 									</View>

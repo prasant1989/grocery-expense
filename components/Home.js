@@ -11,7 +11,9 @@ import {
 	TouchableHighlight,
 	Alert,
 	Button,
+	ActivityIndicator,
 } from "react-native";
+import { Badge, withBadge } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
@@ -36,16 +38,23 @@ export default function Homepage({ navigation }) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const isFocused = useIsFocused();
 	useEffect(() => {
+		setRefreshing(true);
 		fetch(API_ENDPOINT)
 			.then((response) => response.json())
 			.then((responseJson) => {
+				setRefreshing(false);
 				setFilteredDataSource(responseJson.catalogs);
 				setMasterDataSource(responseJson.catalogs);
 			})
 			.catch((error) => {
+				setRefreshing(false);
 				console.error(error);
 			});
 	}, []);
+
+	if (!isFocused && cart.length > 0) {
+		setCart([]);
+	}
 
 	const searchFilterFunction = (text) => {
 		// Check if searched text is not blank
@@ -144,7 +153,6 @@ export default function Homepage({ navigation }) {
 			setCart(filteredCart);
 		}
 	}
-
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<Icon
@@ -158,8 +166,44 @@ export default function Homepage({ navigation }) {
 					}
 				}}
 			>
-				<Text>{cart.length}</Text>
+				{/* <Text>{cart.length}</Text> */}
 			</Icon>
+			<Badge
+				value={cart.length}
+				status="success"
+				containerStyle={{
+					position: "absolute",
+					left: "95%",
+					top: -10,
+				}}
+			/>
+
+			<TextInput
+				style={styles.textInputStyle}
+				onChangeText={(text) => searchFilterFunction(text)}
+				value={search}
+				underlineColorAndroid="transparent"
+				placeholder="Search from available product Here"
+			/>
+			{refreshing ? (
+				<ActivityIndicator size="large" color="#3A773F" />
+			) : (
+				<View style={styles.container}>
+					<FlatList
+						data={filteredDataSource}
+						keyExtractor={(item, index) => index.toString()}
+						ItemSeparatorComponent={ItemSeparatorView}
+						renderItem={ItemView}
+						refreshControl={
+							<RefreshControl
+								refreshing={refreshing}
+								onRefresh={onRefresh}
+							/>
+						}
+					/>
+				</View>
+			)}
+
 			<Modal
 				animationType="fade"
 				transparent={true}
@@ -198,7 +242,7 @@ export default function Homepage({ navigation }) {
 									navigation.navigate("CartItem", {
 										items: cart.map((cart) => ({
 											...cart,
-											qty: 1,
+											quantity: 1,
 											checked: 1,
 										})),
 									});
@@ -211,28 +255,6 @@ export default function Homepage({ navigation }) {
 					</View>
 				</ScrollView>
 			</Modal>
-
-			<View style={styles.container}>
-				<TextInput
-					style={styles.textInputStyle}
-					onChangeText={(text) => searchFilterFunction(text)}
-					value={search}
-					underlineColorAndroid="transparent"
-					placeholder="Search your product Here"
-				/>
-				<FlatList
-					data={filteredDataSource}
-					keyExtractor={(item, index) => index.toString()}
-					ItemSeparatorComponent={ItemSeparatorView}
-					renderItem={ItemView}
-					refreshControl={
-						<RefreshControl
-							refreshing={refreshing}
-							onRefresh={onRefresh}
-						/>
-					}
-				/>
-			</View>
 		</SafeAreaView>
 	);
 }

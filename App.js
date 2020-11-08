@@ -13,9 +13,8 @@ import { navigationRef } from "./components/RootNavigation";
 import CartItem from "./components/CartItem";
 import About from "./components/About";
 import Product from "./components/Product";
+import Order from "./components/Order";
 import Catalogpage from "./components/Catalog";
-// global.API_URL = "http://192.168.43.91:3000/";
-
 const Stack = createStackNavigator();
 export default function App() {
 	let [fontsLoaded] = useFonts({
@@ -34,14 +33,14 @@ export default function App() {
 				ref={navigationRef}
 			>
 				<Stack.Navigator
-					initialRouteName="About"
+					initialRouteName="Home"
 					headerMode="screen"
 					screenOptions={{
 						headerStyle: { backgroundColor: "green" },
 					}}
 				>
 					<Stack.Screen
-						name="Mohanty"
+						name="Home"
 						component={Homepage}
 						options={{
 							header: () => (
@@ -72,6 +71,15 @@ export default function App() {
 						options={{
 							header: () => (
 								<Header headerDisplay="Add a Product" />
+							),
+						}}
+					/>
+					<Stack.Screen
+						name="Order"
+						component={Order}
+						options={{
+							header: () => (
+								<Header headerDisplay="Order Details" />
 							),
 						}}
 					/>
