@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import logo from "../assets/Bgcart.png";
 import CatalogForm from "./CatalogForm.js";
+import Header from "./Header";
+import { useIsFocused } from "@react-navigation/native";
+
 export default function Product({ navigation, route }) {
 	const edit_catalog = {
 		id: route.params?.id?.toString() || "",
@@ -26,6 +29,8 @@ export default function Product({ navigation, route }) {
 	const [loading, setLoading] = useState(false);
 	const [submitError, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const isFocused = useIsFocused();
+
 	React.useEffect(() => {
 		if (edit_catalog != undefined) {
 			setCatalog(edit_catalog);
@@ -131,9 +136,22 @@ export default function Product({ navigation, route }) {
 		}
 	};
 
+	if (!isFocused && catalog.id != "") {
+		setCatalog({
+			id: "",
+			price: "",
+			name: "",
+			unit: "KG",
+		});
+	}
+
 	return (
 		<View style={styles.container}>
-			<ImageBackground source={logo} style={{ width: 280, height: 900 }}>
+			<Header headerDisplay="Add a Product" />
+			<ImageBackground
+				source={logo}
+				style={{ width: "100%", height: "100%" }}
+			>
 				<ScrollView>
 					{submitError ? (
 						<Text style={styles.status}>{errorMessage}</Text>

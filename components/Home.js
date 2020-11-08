@@ -17,7 +17,8 @@ import { Badge, withBadge } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
-import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import Header from "./Header";
 
 // import { CommonActions } from "@react-navigation/native";
 const API_ENDPOINT = `https://powerful-shelf-47496.herokuapp.com/catalogs?page=all`;
@@ -82,6 +83,7 @@ export default function Homepage({ navigation }) {
 	const ItemView = ({ item }) => {
 		return (
 			// Flat List Item
+
 			<View style={styles.fixToText}>
 				<Text style={styles.itemStyle}>
 					{item.name.toUpperCase()}({" "}
@@ -155,11 +157,12 @@ export default function Homepage({ navigation }) {
 	}
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
+			<Header headerDisplay="Mohanty Store" />
 			<Icon
 				name="cart-plus"
 				size={30}
 				color="brown"
-				style={{ textAlign: "right" }}
+				style={{ textAlign: "right", paddingRight: 10 }}
 				onPress={() => {
 					if (cart.length != 0) {
 						setModalVisible(true);
@@ -172,9 +175,9 @@ export default function Homepage({ navigation }) {
 				value={cart.length}
 				status="success"
 				containerStyle={{
-					position: "absolute",
-					left: "95%",
-					top: -10,
+					// position: "absolute",
+					paddingLeft: "90%",
+					top: -30,
 				}}
 			/>
 

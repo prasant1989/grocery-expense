@@ -14,9 +14,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import logo from "../assets/emptycart.png";
-
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import Header from "./Header";
 export default function CartItem({ navigation, route }) {
 	const cartProducts = route.params?.items;
 	const [cartItems, setCartItems] = useState([]);
@@ -152,6 +151,7 @@ export default function CartItem({ navigation, route }) {
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
+			<Header headerDisplay="Cart" />
 			<View
 				style={{
 					flexDirection: "row",

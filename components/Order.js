@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import PendingOrder from "./PendingOrder";
 import FullfilledOrder from "./FullfilledOrder";
+import Header from "./Header";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -45,9 +46,9 @@ function App() {
 			}}
 		>
 			<Stack.Screen
-				name="TabStack"
+				name="Mohanty"
 				component={TabStack}
-				options={{ title: "Tab Stack" }}
+				options={{ title: "Mohanty Store" }}
 			/>
 		</Stack.Navigator>
 	);

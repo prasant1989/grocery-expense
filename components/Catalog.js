@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Header from "./Header";
 
 export default function Catalogpage({ navigation }) {
 	const [refreshing, setRefreshing] = useState(false);
@@ -148,6 +149,7 @@ export default function Catalogpage({ navigation }) {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<Header headerDisplay="Catalog" />
 			{loading ? (
 				<ActivityIndicator size="large" color="#3A773F" />
 			) : (
