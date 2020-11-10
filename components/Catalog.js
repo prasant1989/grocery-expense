@@ -24,7 +24,7 @@ export default function Catalogpage({ navigation }) {
 	useEffect(() => {
 		setLoading(true);
 		isRendered = true;
-		fetch(`https://powerful-shelf-47496.herokuapp.com/catalogs?page=all`)
+		fetch(`http://192.168.43.91:3000/catalogs?page=all`)
 			.then((response) => response.json())
 			.then((json) => {
 				if (isRendered) {
@@ -108,10 +108,7 @@ export default function Catalogpage({ navigation }) {
 				"Content-Type": "application/json",
 			},
 		};
-		return fetch(
-			`https://powerful-shelf-47496.herokuapp.com/catalogs/` + id,
-			data
-		)
+		return fetch(`http://192.168.43.91:3000/catalogs/` + id, data)
 			.then((response) => {
 				if (response.status === 200 || response.status === 204) {
 					return Promise.resolve();
@@ -140,7 +137,7 @@ export default function Catalogpage({ navigation }) {
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
-		fetch(`https://powerful-shelf-47496.herokuapp.com/catalogs?page=all`)
+		fetch(`http://192.168.43.91:3000/catalogs?page=all`)
 			.then((response) => response.json())
 			.then((json) => setAllCatalogData(json.catalogs))
 			.catch((error) => console.error(error))

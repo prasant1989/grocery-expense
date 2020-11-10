@@ -6,9 +6,7 @@ import {
 	ScrollView,
 	ActivityIndicator,
 	Alert,
-	ImageBackground,
 } from "react-native";
-import logo from "../assets/Bgcart.png";
 import CatalogForm from "./CatalogForm.js";
 import Header from "./Header";
 import { useIsFocused } from "@react-navigation/native";
@@ -77,10 +75,10 @@ export default function Product({ navigation, route }) {
 
 	const submitCatalog = (type) => {
 		let method = "POST";
-		let url = `https://powerful-shelf-47496.herokuapp.com/catalogs`;
+		let url = `http://192.168.43.91:3000/catalogs`;
 		if (type == "edit") {
 			method = "PUT";
-			url = `https://powerful-shelf-47496.herokuapp.com/catalogs/${catalog.id}`;
+			url = `http://192.168.43.91:3000/catalogs/${catalog.id}`;
 		}
 		if (!catalog.name | !catalog.unit | !catalog.price) {
 			errorMessageDetails();
@@ -148,31 +146,26 @@ export default function Product({ navigation, route }) {
 	return (
 		<View style={styles.container}>
 			<Header headerDisplay="Add a Product" />
-			<ImageBackground
-				source={logo}
-				style={{ width: "100%", height: "100%" }}
-			>
-				<ScrollView>
-					{submitError ? (
-						<Text style={styles.status}>{errorMessage}</Text>
-					) : (
-						<Text style={styles.status}>
-							Please enter the Catalog Details
-						</Text>
-					)}
-					{loading ? (
-						<ActivityIndicator size="large" color="#0000ff" />
-					) : (
-						<CatalogForm
-							catalog={catalog}
-							handleNameChange={handleNameChange}
-							handlePriceChange={handlePriceChange}
-							handleUnitChange={handleUnitChange}
-							submitCatalog={submitCatalog}
-						/>
-					)}
-				</ScrollView>
-			</ImageBackground>
+			<ScrollView>
+				{submitError ? (
+					<Text style={styles.status}>{errorMessage}</Text>
+				) : (
+					<Text style={styles.status}>
+						Please enter the Catalog Details
+					</Text>
+				)}
+				{loading ? (
+					<ActivityIndicator size="large" color="#0000ff" />
+				) : (
+					<CatalogForm
+						catalog={catalog}
+						handleNameChange={handleNameChange}
+						handlePriceChange={handlePriceChange}
+						handleUnitChange={handleUnitChange}
+						submitCatalog={submitCatalog}
+					/>
+				)}
+			</ScrollView>
 		</View>
 	);
 }

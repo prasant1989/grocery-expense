@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useState, Fragment } from "react";
 import {
 	StyleSheet,
 	ImageBackground,
@@ -7,28 +6,35 @@ import {
 	View,
 	TouchableOpacity,
 	ScrollView,
-	Image,
 	ActivityIndicator,
+	TouchableHighlight,
 	TextInput,
 	Alert,
+	Modal,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import logo from "../assets/emptycart.png";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Button } from "react-native-elements";
 import Header from "./Header";
-export default function CartItem({ navigation, route }) {
-	const cartProducts = route.params?.items;
+
+const API_HOST = "http://192.168.43.91:3000";
+
+export default function OrderDetail({ navigation, route }) {
 	const [cartItems, setCartItems] = useState([]);
 	const [cartItemsIsLoading, setCartItemsIsLoading] = useState(false);
 	const [selectAll, setSelectAll] = useState(false);
-
-	React.useEffect(() => {
-		const unsubscribe = navigation.addListener("focus", () => {
-			if (cartProducts != undefined) {
-				setCartItems(cartProducts);
-			}
-		});
-		return unsubscribe;
+	const [modalVisible, setModalVisible] = useState(false);
+	useEffect(() => {
+		setCartItemsIsLoading(true);
+		fetch(`${API_HOST}/orders/${route.params.id}`)
+			.then((res) => res.json())
+			.then((json) => {
+				setCartItemsIsLoading(false);
+				setCartItems(json.order.order_details);
+			})
+			.catch((error) => console.error(error))
+			.finally(() => setCartItemsIsLoading(false));
 	}, [route.params]);
 
 	const selectHandler = (index, value) => {
@@ -98,99 +104,84 @@ export default function CartItem({ navigation, route }) {
 	};
 
 	const placeOrder = () => {
-		console.log("myCart", cartItems);
-		setCartItemsIsLoading(true);
-		let method = "POST";
-		let url = "http://192.168.43.91:3000/orders";
-		let data = {
-			method: method,
-			body: JSON.stringify({
-				order: {
-					status: 0,
-					order_details_attributes: cartItems.map((item) => ({
-						item_name: item.name,
-						quantity: item.quantity,
-						price: item.price,
-						catalog_id: item.id,
-						unit: item.unit,
-					})),
-				},
-			}),
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-			},
-		};
-		return fetch(url, data)
-			.then((response) => {
-				if (response.status === 200 || response.status === 201) {
-					return Promise.resolve(response.json());
-				}
-				return Promise.resolve(response.json()).then(
-					(responseInJson) => {
-						return Promise.reject(responseInJson.error);
-					}
-				);
-			})
-			.then(
-				(result) => {
-					console.log("Success: ", result);
-					navigation.navigate("Order");
-				},
-				(error) => {
-					console.log("Error: ", error);
-				}
-			)
-			.catch((catchError) => {
-				console.log("Catch: ", catchError);
-			})
-			.finally(() => {
-				setCartItemsIsLoading(false);
-			});
+		console.log("Placing Order");
+	};
+
+	const addItem = () => {
+		setModalVisible(!modalVisible);
 	};
 
 	return (
-		<View style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
+		<View
+			style={{
+				flex: 1,
+				backgroundColor: "#f6f6f6",
+			}}
+		>
 			<Header headerDisplay="Cart" />
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					Alert.alert("Modal has been closed.");
+				}}
+			>
+				<View style={styles.centeredView}>
+					<View style={styles.modalView}>
+						<Text style={styles.modalText}>Hello World!</Text>
+
+						<Text style={styles.textStyle}>Hide Modal</Text>
+						<Button
+							title="Add New Item"
+							onPress={() => setModalVisible(!modalVisible)}
+							icon={
+								<Icon
+									name="plus-circle"
+									size={15}
+									color="white"
+								/>
+							}
+							iconRight
+						/>
+					</View>
+				</View>
+			</Modal>
 			<View
 				style={{
 					flexDirection: "row",
 					backgroundColor: "#fff",
 					marginBottom: 10,
+					justifyContent: "space-between",
 				}}
 			>
-				<View style={[styles.centerElement, { width: 50, height: 50 }]}>
-					<Ionicons name="ios-cart" size={25} color="#000" />
-				</View>
-				<View style={[styles.centerElement, { height: 50 }]}>
-					<Text style={{ fontSize: 18, color: "#000" }}>
-						Shopping Cart
-					</Text>
-				</View>
 				{cartItems.length > 0 ? (
-					<View
-						style={[
-							styles.centerElement,
-							{ height: 50, paddingLeft: "25%" },
-						]}
-					>
-						<TouchableOpacity
-							style={[
-								styles.centerElement,
-								{
-									backgroundColor: "#0faf9a",
-									width: 100,
-									height: 25,
-									borderRadius: 5,
-								},
-							]}
+					<Fragment>
+						<Button
+							title="Add Item"
+							onPress={() => addItem()}
+							icon={
+								<Icon
+									name="plus-circle"
+									size={15}
+									color="white"
+								/>
+							}
+							iconRight
+						/>
+
+						<Button
+							title="Fullfill"
+							icon={
+								<Icon
+									name="check-square-o"
+									size={15}
+									color="white"
+								/>
+							}
 							onPress={() => placeOrder()}
-						>
-							<Text style={{ color: "#ffffff" }}>
-								Place Order
-							</Text>
-						</TouchableOpacity>
-					</View>
+						/>
+					</Fragment>
 				) : (
 					<View>
 						<Text style={{ color: "#ffffff" }}>No Items</Text>
@@ -264,7 +255,7 @@ export default function CartItem({ navigation, route }) {
 											numberOfLines={1}
 											style={{ fontSize: 15 }}
 										>
-											{item.name.toUpperCase()}
+											{item.item_name.toUpperCase()}
 										</Text>
 										<Text
 											numberOfLines={1}
@@ -416,4 +407,34 @@ export default function CartItem({ navigation, route }) {
 
 const styles = StyleSheet.create({
 	centerElement: { justifyContent: "center", alignItems: "center" },
+	modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+	},
+	openButton: {
+		backgroundColor: "#F194FF",
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2,
+	},
+	textStyle: {
+		color: "white",
+		fontWeight: "bold",
+		textAlign: "center",
+	},
+	modalText: {
+		marginBottom: 15,
+		textAlign: "center",
+	},
 });

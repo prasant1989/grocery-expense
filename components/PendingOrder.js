@@ -10,7 +10,7 @@ import {
 	ScrollView,
 	RefreshControl,
 } from "react-native";
-
+import { ListItem } from "react-native-elements";
 export default function PendingOrder({ navigation }) {
 	const [selectedId, setSelectedId] = useState(null);
 	const [pendingOrders, setpendingOrders] = useState([]);
@@ -19,30 +19,10 @@ export default function PendingOrder({ navigation }) {
 
 	let isRendered = useRef(false);
 
-	const Item = ({ item, onPress, style }) => (
-		<TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-			<Text
-				style={{
-					fontStyle: "italic",
-					fontWeight: "bold",
-					fontSize: 16,
-				}}
-			>
-				Order# - {item.id} - {item.order_date}
-			</Text>
-
-			<Text style={{ color: "#FFFF" }}>
-				{item.order_details.map(
-					(item, index) =>
-						`${item.item_name}(${item.quantity} ${item.unit}) `
-				)}
-			</Text>
-		</TouchableOpacity>
-	);
 	useEffect(() => {
 		setLoading(true);
 		isRendered = true;
-		fetch("https://powerful-shelf-47496.herokuapp.com/orders")
+		fetch("http://192.168.43.91:3000/orders")
 			.then((response) => response.json())
 			.then((json) => {
 				if (isRendered) {
@@ -62,21 +42,48 @@ export default function PendingOrder({ navigation }) {
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
-		fetch("https://powerful-shelf-47496.herokuapp.com/orders")
+		fetch("http://192.168.43.91:3000/orders")
 			.then((response) => response.json())
 			.then((json) => setpendingOrders(json.orders))
 			.catch((error) => console.error(error))
 			.finally(() => setRefreshing(false));
 	}, []);
 
-	const renderItem = ({ item }) => {
-		const backgroundColor = item.id === selectedId ? "#b7b3e3" : "#633689";
-
+	const renderItem = ({ item }) => (
+		<ListItem
+			bottomDivider
+			button={true}
+			onPress={() => navigation.navigate("OrderDetail", item)}
+		>
+			<ListItem.Content>
+				<ListItem.Title>
+					<Text style={{ fontWeight: "bold" }}>
+						Order# - {item.id} -{" "}
+						{item.order_details.map(
+							(item, index) =>
+								`${item.item_name}(${item.quantity} ${item.unit}) `
+						)}
+					</Text>
+				</ListItem.Title>
+				<ListItem.Subtitle>
+					<Text style={{ color: "#633689" }}>
+						{" "}
+						Date: {item.order_date}
+					</Text>
+				</ListItem.Subtitle>
+			</ListItem.Content>
+			<ListItem.Chevron color="red" />
+		</ListItem>
+	);
+	const itemSeparator = () => {
 		return (
-			<Item
-				item={item}
-				onPress={() => setSelectedId(item.id)}
-				style={{ backgroundColor }}
+			<View
+				style={{
+					height: 2,
+					backgroundColor: "rgba(0,0,0,0.5)",
+					marginLeft: 10,
+					marginRight: 10,
+				}}
 			/>
 		);
 	};
@@ -91,6 +98,7 @@ export default function PendingOrder({ navigation }) {
 					renderItem={renderItem}
 					keyExtractor={(item) => item.id.toString()}
 					extraData={selectedId}
+					ItemSeparatorComponent={itemSeparator}
 					refreshControl={
 						<RefreshControl
 							refreshing={refreshing}

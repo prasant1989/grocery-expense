@@ -5,7 +5,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import PendingOrder from "./PendingOrder";
 import FullfilledOrder from "./FullfilledOrder";
-import Header from "./Header";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -40,15 +39,17 @@ function App() {
 		<Stack.Navigator
 			initialRouteName="Pending Order"
 			screenOptions={{
-				headerStyle: { backgroundColor: "#633689" },
-				headerTintColor: "#fff",
+				headerStyle: { backgroundColor: "white" },
+				headerTintColor: "gray",
 				headerTitleStyle: { fontWeight: "bold" },
 			}}
 		>
 			<Stack.Screen
 				name="Mohanty"
 				component={TabStack}
-				options={{ title: "Mohanty Store" }}
+				options={{
+					title: "Order History",
+				}}
 			/>
 		</Stack.Navigator>
 	);

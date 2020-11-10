@@ -7,8 +7,7 @@ import Homepage from "./components/Home";
 import { Platform } from "react-native";
 import { useFonts } from "expo-font";
 import { AppLoading } from "expo";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import OrderDetail from "./components/OrderDetail";
 import { navigationRef } from "./components/RootNavigation";
 import CartItem from "./components/CartItem";
 import About from "./components/About";
@@ -23,7 +22,7 @@ const BottomTab = () => {
 		<BottomStack.Navigator
 			initialRouteName="Home"
 			screenOptions={({ route }) => ({
-				tabBarButton: ["CartItem"].includes(route.name)
+				tabBarButton: ["CartItem", "OrderDetail"].includes(route.name)
 					? () => {
 							return null;
 					  }
@@ -78,6 +77,15 @@ const BottomTab = () => {
 			<BottomStack.Screen
 				name="Catalog"
 				component={Catalogpage}
+				options={{
+					tabBarIcon: (tabInfo) => (
+						<Icon name="gift" size={18} color={tabInfo.tintColor} />
+					),
+				}}
+			/>
+			<BottomStack.Screen
+				name="OrderDetail"
+				component={OrderDetail}
 				options={{
 					tabBarIcon: (tabInfo) => (
 						<Icon name="gift" size={18} color={tabInfo.tintColor} />

@@ -21,7 +21,7 @@ import { useIsFocused } from "@react-navigation/native";
 import Header from "./Header";
 
 // import { CommonActions } from "@react-navigation/native";
-const API_ENDPOINT = `https://powerful-shelf-47496.herokuapp.com/catalogs?page=all`;
+const API_ENDPOINT = `http://192.168.43.91:3000/catalogs?page=all`;
 
 // export const resetStackAndNavigate = (navigation) => {
 // 	navigation.dispatch(
@@ -130,7 +130,7 @@ export default function Homepage({ navigation }) {
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		setCart([]);
-		fetch(`https://powerful-shelf-47496.herokuapp.com/catalogs?page=all`)
+		fetch(`http://192.168.43.91:3000/catalogs?page=all`)
 			.then((response) => response.json())
 			.then((json) => {
 				setFilteredDataSource(json.catalogs);
