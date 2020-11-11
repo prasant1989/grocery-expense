@@ -10,49 +10,49 @@ const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 function TabStack() {
-	return (
-		<Tab.Navigator
-			initialRouteName="Pending Order"
-			tabBarOptions={{
-				activeTintColor: "#FFFFFF",
-				inactiveTintColor: "#F8F8F8",
-				style: {
-					backgroundColor: "#633689",
-				},
-				labelStyle: {
-					textAlign: "center",
-				},
-				indicatorStyle: {
-					borderBottomColor: "#87B56A",
-					borderBottomWidth: 2,
-				},
-			}}
-		>
-			<Tab.Screen name="Fulfilled Order" component={FullfilledOrder} />
-			<Tab.Screen name="Pending Order" component={PendingOrder} />
-		</Tab.Navigator>
-	);
+  return (
+    <Tab.Navigator
+      initialRouteName="Pending Order"
+      tabBarOptions={{
+        activeTintColor: "#FFFFFF",
+        inactiveTintColor: "#F8F8F8",
+        style: {
+          backgroundColor: "#633689",
+        },
+        labelStyle: {
+          textAlign: "center",
+        },
+        indicatorStyle: {
+          borderBottomColor: "#87B56A",
+          borderBottomWidth: 2,
+        },
+      }}
+    >
+      <Tab.Screen name="Fulfilled Order" component={FullfilledOrder} />
+      <Tab.Screen name="Pending Order" component={PendingOrder} />
+    </Tab.Navigator>
+  );
 }
 
 function App() {
-	return (
-		<Stack.Navigator
-			initialRouteName="Pending Order"
-			screenOptions={{
-				headerStyle: { backgroundColor: "white" },
-				headerTintColor: "gray",
-				headerTitleStyle: { fontWeight: "bold" },
-			}}
-		>
-			<Stack.Screen
-				name="Mohanty"
-				component={TabStack}
-				options={{
-					title: "Order History",
-				}}
-			/>
-		</Stack.Navigator>
-	);
+  return (
+    <Stack.Navigator
+      initialRouteName="Pending Order"
+      screenOptions={{
+        headerStyle: { backgroundColor: "white" },
+        headerTintColor: "gray",
+        headerTitleStyle: { fontWeight: "bold" },
+      }}
+    >
+      <Stack.Screen
+        name="Mohanty"
+        component={TabStack}
+        options={{
+          title: "Order History",
+        }}
+      />
+    </Stack.Navigator>
+  );
 }
 
 export default App;
