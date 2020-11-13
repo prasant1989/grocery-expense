@@ -14,7 +14,7 @@ import { ListItem } from "react-native-elements";
 import apiRequest from "../api_request";
 export default function PendingOrder({ navigation }) {
   const [selectedId, setSelectedId] = useState(null);
-  const [pendingOrders, setpendingOrders] = useState([]);
+  const [pendingOrders, setPendingOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -26,7 +26,7 @@ export default function PendingOrder({ navigation }) {
     apiRequest("/orders", {})
       .then((json) => {
         if (isRendered) {
-          setpendingOrders(json.orders);
+          setPendingOrders(json.orders);
         }
       })
       .catch((error) => console.error(error))
@@ -43,7 +43,7 @@ export default function PendingOrder({ navigation }) {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     apiRequest("/orders", {})
-      .then((json) => setpendingOrders(json.orders))
+      .then((json) => setPendingOrders(json.orders))
       .catch((error) => console.error(error))
       .finally(() => setRefreshing(false));
   }, []);
