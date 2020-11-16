@@ -10,7 +10,6 @@ import {
   TextInput,
   TouchableHighlight,
   Alert,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import { Badge, withBadge } from "react-native-elements";
