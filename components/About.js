@@ -5,7 +5,7 @@ import imageC from "../assets/our-story-image-3.jpg";
 import Header from "./Header";
 const welcome = "Welcome to Mohanty Store...";
 
-const about = "Shoppping is Fun with us ...";
+const about = "Shopping is Fun with us ...";
 
 export default function About() {
   return (

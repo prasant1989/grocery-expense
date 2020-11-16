@@ -7,23 +7,27 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  TouchableHighlight,
   TextInput,
   Alert,
   Modal,
 } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+
 import { Ionicons } from "@expo/vector-icons";
 import logo from "../assets/emptycart.png";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-elements";
 import Header from "./Header";
 import apiRequest from "../api_request";
+import { add } from "react-native-reanimated";
 
 export default function OrderDetail({ navigation, route }) {
   const [cartItems, setCartItems] = useState([]);
   const [cartItemsIsLoading, setCartItemsIsLoading] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  let newItem = {};
+
   useEffect(() => {
     setCartItemsIsLoading(true);
     apiRequest(`/orders/${route.params.id}`)
@@ -106,7 +110,12 @@ export default function OrderDetail({ navigation, route }) {
   };
 
   const addItem = () => {
+    // const allItems = [...cartItems]; // clone the array
+    // allItems.push(newItem);
+    // newItem = {};
     setModalVisible(!modalVisible);
+    // console.log(allItems);
+    // setCartItems(allItems);
   };
 
   return (
@@ -125,14 +134,57 @@ export default function OrderDetail({ navigation, route }) {
           Alert.alert("Modal has been closed.");
         }}
       >
-        <View style={styles.centeredView}>
+        <View>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
+            <Fragment>
+              <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+                Add Item to Order list
+              </Text>
+              <Text style={styles.label}>Unit *</Text>
+              <DropDownPicker
+                items={[
+                  { label: "Kilogram", value: "KG" },
+                  { label: "Litre", value: "LTR" },
+                  { label: "Unit", value: "UNIT" },
+                ]}
+                containerStyle={{ height: 40 }}
+                style={{ backgroundColor: "#fafafa" }}
+                dropDownStyle={{
+                  backgroundColor: "#fafafa",
+                  marginTop: 2,
+                }}
+                onChangeItem={(item) => (newItem["unit"] = item.value)}
+                placeholder="Select an unit"
+                placeholderStyle={{ fontWeight: "bold" }}
+              />
+              <Text style={styles.label}>Name *</Text>
+              <TextInput
+                onChangeText={(text) => (newItem["item_name"] = text)}
+                placeholder="Enter Item Name"
+                clearTextOnFocus={true}
+                style={{ padding: 5, borderColor: "black", borderWidth: 1 }}
+              />
 
-            <Text style={styles.textStyle}>Hide Modal</Text>
+              <Text style={styles.label}>Price</Text>
+              <TextInput
+                onChangeText={(text) => (newItem["price"] = text)}
+                placeholder="Enter Item Price"
+                keyboardType="decimal-pad"
+                style={{ padding: 5, borderColor: "black", borderWidth: 1 }}
+              />
+              <Text style={styles.label}></Text>
+              <Text style={styles.label}>Quantity</Text>
+              <TextInput
+                onChangeText={(text) => (newItem["quantity"] = text)}
+                placeholder="Enter Item Qty"
+                keyboardType="decimal-pad"
+                style={{ padding: 5, borderColor: "black", borderWidth: 1 }}
+              />
+              <Text />
+            </Fragment>
             <Button
               title="Add New Item"
-              onPress={() => setModalVisible(!modalVisible)}
+              onPress={() => addItem()}
               icon={<Icon name="plus-circle" size={15} color="white" />}
               iconRight
             />
@@ -151,7 +203,7 @@ export default function OrderDetail({ navigation, route }) {
           <Fragment>
             <Button
               title="Add Item"
-              onPress={() => addItem()}
+              onPress={() => setModalVisible(!modalVisible)}
               icon={<Icon name="plus-circle" size={15} color="white" />}
               iconRight
             />
@@ -338,13 +390,11 @@ export default function OrderDetail({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  centerElement: { justifyContent: "center", alignItems: "center" },
   modalView: {
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -360,11 +410,7 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+
   modalText: {
     marginBottom: 15,
     textAlign: "center",

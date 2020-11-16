@@ -23,7 +23,7 @@ export default function PendingOrder({ navigation }) {
   useEffect(() => {
     setLoading(true);
     isRendered = true;
-    apiRequest("/orders", {})
+    apiRequest("/orders/pending", {})
       .then((json) => {
         if (isRendered) {
           setpendingOrders(json.orders);
