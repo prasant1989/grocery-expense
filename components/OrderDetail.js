@@ -10,13 +10,13 @@ import {
   TextInput,
   Alert,
   Modal,
+  Button,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
 import { Ionicons } from "@expo/vector-icons";
 import logo from "../assets/emptycart.png";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Button } from "react-native-elements";
 import Header from "./Header";
 import apiRequest from "../api_request";
 
@@ -151,7 +151,7 @@ export default function OrderDetail({ navigation, route }) {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          // Alert.alert("Modal has been closed.");
         }}
       >
         <View>
@@ -207,12 +207,21 @@ export default function OrderDetail({ navigation, route }) {
               />
               <Text />
             </Fragment>
-            <Button
-              title="Add New Item"
-              onPress={() => addItem()}
-              icon={<Icon name="plus-circle" size={15} color="white" />}
-              iconRight
-            />
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Button
+                title="Close"
+                color="#f194ff"
+                onPress={() => setModalVisible(!modalVisible)}
+              />
+              <Button
+                title="Add New Item"
+                onPress={() => addItem()}
+                icon={<Icon name="plus-circle" size={15} color="white" />}
+                iconRight
+              />
+            </View>
           </View>
         </View>
       </Modal>
