@@ -19,14 +19,33 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-elements";
 import Header from "./Header";
 import apiRequest from "../api_request";
-import { add } from "react-native-reanimated";
 
 export default function OrderDetail({ navigation, route }) {
   const [cartItems, setCartItems] = useState([]);
   const [cartItemsIsLoading, setCartItemsIsLoading] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  let newItem = {};
+  const errorRef = React.createRef();
+  let newItemError = "";
+  let newItem = { item_name: "", price: 0, quantity: 0, unit: "" };
+  const errorMessageDetails = () => {
+    if (!newItem.item_name) {
+      newItemError = "Item name empty / invalid !";
+      errorRef.current.setNativeProps({ text: "Item name empty / invalid !" });
+    } else if (!newItem.unit) {
+      newItemError = "Item Unit empty / invalid !";
+      errorRef.current.setNativeProps({ text: "Item unit empty / invalid !" });
+    } else if (!newItem.price) {
+      newItemError = "Item price empty / invalid !";
+      errorRef.current.setNativeProps({ text: "Item price empty / invalid !" });
+    } else if (!newItem.quantity) {
+      newItemError = "Item qty empty / invalid !";
+      errorRef.current.setNativeProps({ text: "Item Qty empty / invalid !" });
+    } else {
+      newItemError = "";
+      errorRef.current.setNativeProps({ text: "" });
+    }
+  };
 
   useEffect(() => {
     setCartItemsIsLoading(true);
@@ -110,12 +129,13 @@ export default function OrderDetail({ navigation, route }) {
   };
 
   const addItem = () => {
-    // const allItems = [...cartItems]; // clone the array
-    // allItems.push(newItem);
-    // newItem = {};
-    setModalVisible(!modalVisible);
-    // console.log(allItems);
-    // setCartItems(allItems);
+    errorMessageDetails();
+    if (newItemError == "") {
+      const allItems = [...cartItems]; // clone the array
+      allItems.push(newItem);
+      setModalVisible(!modalVisible);
+      setCartItems(allItems);
+    }
   };
 
   return (
@@ -140,6 +160,11 @@ export default function OrderDetail({ navigation, route }) {
               <Text style={{ textAlign: "center", fontWeight: "bold" }}>
                 Add Item to Order list
               </Text>
+              <TextInput
+                editable={false}
+                style={{ textAlign: "left", fontWeight: "bold", color: "red" }}
+                ref={errorRef}
+              ></TextInput>
               <Text style={styles.label}>Unit *</Text>
               <DropDownPicker
                 items={[
