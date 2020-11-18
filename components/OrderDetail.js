@@ -124,8 +124,17 @@ export default function OrderDetail({ navigation, route }) {
     return 0;
   };
 
-  const placeOrder = () => {
-    console.log("Placing Order");
+  const cancelOrder = () => {
+    setCartItemsIsLoading(true);
+    apiRequest(`/orders/${route.params.id}/reject`, { method: "POST" })
+      .then(() => {
+        setCartItemsIsLoading(false);
+        navigation.navigate("Order", { tab: "Cancelled Order" });
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => setCartItemsIsLoading(false));
   };
 
   const addItem = () => {
@@ -136,6 +145,28 @@ export default function OrderDetail({ navigation, route }) {
       setModalVisible(!modalVisible);
       setCartItems(allItems);
     }
+  };
+
+  const fulfillOrder = () => {
+    setCartItemsIsLoading(true);
+    let data = {
+      method: "POST",
+      body: JSON.stringify({ order: cartItems, totalPrice: subtotalPrice() }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(data);
+    apiRequest(`/orders/${route.params.id}/fullfill`, data)
+      .then(() => {
+        setCartItemsIsLoading(false);
+        navigation.navigate("Order", { tab: "Fulfilled Order" });
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => setCartItemsIsLoading(false));
   };
 
   return (
@@ -236,16 +267,20 @@ export default function OrderDetail({ navigation, route }) {
         {cartItems.length > 0 ? (
           <Fragment>
             <Button
+              title="Cancel Order"
+              icon={<Icon name="check-square-o" size={15} color="white" />}
+              onPress={() => cancelOrder()}
+            />
+            <Button
               title="Add Item"
               onPress={() => setModalVisible(!modalVisible)}
               icon={<Icon name="plus-circle" size={15} color="white" />}
               iconRight
             />
-
             <Button
-              title="Fullfill"
+              title="Fullfill Order"
               icon={<Icon name="check-square-o" size={15} color="white" />}
-              onPress={() => placeOrder()}
+              onPress={() => fulfillOrder()}
             />
           </Fragment>
         ) : (

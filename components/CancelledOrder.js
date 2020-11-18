@@ -14,23 +14,22 @@ import { ListItem } from "react-native-elements";
 import apiRequest from "../api_request";
 import { useIsFocused } from "@react-navigation/native";
 
-export default function PendingOrder({ navigation }) {
-  const [selectedId, setSelectedId] = useState(null);
-  const [pendingOrders, setPendingOrders] = useState([]);
+export default function CancelledOrder({ navigation }) {
+  const [cancelledOrders, setCancelledOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
   let isRendered = useRef(false);
-  if (!isFocused && pendingOrders.length > 0) {
-    setPendingOrders([]);
+  if (!isFocused && cancelledOrders.length > 0) {
+    setCancelledOrders([]);
   }
   useEffect(() => {
     setLoading(true);
     isRendered = true;
-    apiRequest("/orders/pending", {})
+    apiRequest("/orders/cancelled", {})
       .then((json) => {
         if (isRendered) {
-          setPendingOrders(json.orders);
+          setCancelledOrders(json.orders);
         }
       })
       .catch((error) => console.error(error))
@@ -46,18 +45,14 @@ export default function PendingOrder({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    apiRequest("/orders", {})
-      .then((json) => setPendingOrders(json.orders))
+    apiRequest("/orders/cancelled", {})
+      .then((json) => setCancelledOrders(json.orders))
       .catch((error) => console.error(error))
       .finally(() => setRefreshing(false));
   }, []);
 
   const renderItem = ({ item }) => (
-    <ListItem
-      bottomDivider
-      button={true}
-      onPress={() => navigation.navigate("OrderDetail", item)}
-    >
+    <ListItem bottomDivider button={true}>
       <ListItem.Content>
         <ListItem.Title>
           <Text style={{ fontWeight: "bold" }}>
@@ -72,7 +67,6 @@ export default function PendingOrder({ navigation }) {
           <Text style={{ color: "#633689" }}> Date: {item.order_date}</Text>
         </ListItem.Subtitle>
       </ListItem.Content>
-      <ListItem.Chevron color="red" />
     </ListItem>
   );
   const itemSeparator = () => {
@@ -94,10 +88,9 @@ export default function PendingOrder({ navigation }) {
         <ActivityIndicator size="large" color="#3A773F" />
       ) : (
         <FlatList
-          data={pendingOrders}
+          data={cancelledOrders}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
-          extraData={selectedId}
           ItemSeparatorComponent={itemSeparator}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

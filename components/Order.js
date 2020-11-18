@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import PendingOrder from "./PendingOrder";
 import FullfilledOrder from "./FullfilledOrder";
+import CancelledOrder from "./CancelledOrder";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -28,7 +29,8 @@ function TabStack() {
         },
       }}
     >
-      <Tab.Screen name="Fulfilled Order" component={FullfilledOrder} />
+      <Tab.Screen name="Fullfilled Order" component={FullfilledOrder} />
+      <Tab.Screen name="Cancelled Order" component={CancelledOrder} />
       <Tab.Screen name="Pending Order" component={PendingOrder} />
     </Tab.Navigator>
   );
