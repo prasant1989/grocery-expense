@@ -12,18 +12,22 @@ import {
 } from "react-native";
 import { ListItem } from "react-native-elements";
 import apiRequest from "../api_request";
-import { useIsFocused } from "@react-navigation/native";
 
 export default function PendingOrder({ navigation }) {
   const [selectedId, setSelectedId] = useState(null);
   const [pendingOrders, setPendingOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const isFocused = useIsFocused();
   let isRendered = useRef(false);
-  if (!isFocused && pendingOrders.length > 0) {
-    setPendingOrders([]);
-  }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      onRefresh();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   useEffect(() => {
     setLoading(true);
     isRendered = true;

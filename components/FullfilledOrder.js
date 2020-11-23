@@ -10,17 +10,19 @@ import {
 } from "react-native";
 import { ListItem } from "react-native-elements";
 import apiRequest from "../api_request";
-import { useIsFocused } from "@react-navigation/native";
 
 export default function FulfilledOrder({ navigation }) {
   const [fulfilledOrders, setFulfilledOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const isFocused = useIsFocused();
   let isRendered = useRef(false);
-  if (!isFocused && fulfilledOrders.length > 0) {
-    setFulfilledOrders([]);
-  }
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      onRefresh();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   useEffect(() => {
     setLoading(true);
     isRendered = true;
