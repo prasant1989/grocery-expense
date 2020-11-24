@@ -1,135 +1,200 @@
 import React, { useState } from "react";
 import {
-	StyleSheet,
-	Text,
-	View,
-	TextInput,
-	ScrollView,
-	Button,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
+import CatalogForm from "./CatalogForm.js";
+import Header from "./Header";
+import { useIsFocused } from "@react-navigation/native";
+import apiRequest from "../api_request";
+export default function Product({ navigation, route }) {
+  const edit_catalog = {
+    id: route.params?.id?.toString() || "",
+    price: route.params?.price?.toString() || "",
+    name: route.params?.name || "",
+    unit: route.params?.unit || "",
+  };
+  const [catalog, setCatalog] = useState({
+    id: "",
+    price: "",
+    name: "",
+    unit: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [submitError, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const isFocused = useIsFocused();
 
-import DropDownPicker from "react-native-dropdown-picker";
+  React.useEffect(() => {
+    if (edit_catalog != undefined) {
+      setCatalog(edit_catalog);
+    }
+  }, [route.params]);
+  const errorMessageDetails = () => {
+    if (!catalog.name) {
+      setErrorMessage("Item name empty / invalid !");
+    } else if (!catalog.unit) {
+      setErrorMessage("Item unit empty / invalid !");
+    } else if (!catalog.price) {
+      setErrorMessage("Item price empty / invalid !");
+    }
+  };
 
-export default function Product() {
-	const [name, setName] = useState("");
-	const [unit, setUnit] = useState("");
-	const [price, setPrice] = useState("");
-	const [submitError, setError] = useState(false);
-	const [submitted, trySubmit] = useState(false);
+  const handleNameChange = (name) => {
+    setCatalog({ ...catalog, name: name });
+  };
 
-	const postMessage = () => {
-		if (!name | !unit) {
-			setError(true);
-		} else {
-			let data = {
-				method: "POST",
-				body: JSON.stringify({
-					catalog: { name: name, unit: unit, price: price },
-				}),
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-			};
-			return fetch("http://192.168.43.91:3000/catalogs", data)
-				.then((response) => response.json())
-				.then((json) => setError(false));
-		}
-	};
+  const handlePriceChange = (price) => {
+    setCatalog({ ...catalog, price: price });
+  };
 
-	return (
-		<View style={styles.container}>
-			<ScrollView>
-				{submitError ? (
-					<Text style={styles.status}>
-						Entered info in incorrect !
-					</Text>
-				) : (
-					<Text style={styles.status}>
-						Please enter the requested information
-					</Text>
-				)}
-				{submitted ? (
-					<Text>
-						Name: {name}, Unit: {unit}
-					</Text>
-				) : (
-					<Text style={styles.req}>* required</Text>
-				)}
+  const handleUnitChange = (unit) => {
+    setCatalog({ ...catalog, unit: unit });
+  };
 
-				<Text style={styles.label}>Unit *</Text>
-				<DropDownPicker
-					items={[
-						{ label: "KG", value: "KG" },
-						{ label: "Litre", value: "L" },
-						{ label: "Unit", value: "UNIT" },
-					]}
-					containerStyle={{ height: 40 }}
-					style={{ backgroundColor: "#fafafa" }}
-					dropDownStyle={{ backgroundColor: "#fafafa", marginTop: 2 }}
-					onChangeItem={(item) => setUnit(item.value)}
-					placeholder="Select an unit"
-					placeholderStyle={{ fontWeight: "bold" }}
-				/>
-				<Text style={styles.label}>Name *</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setName(text)}
-					value={name}
-				/>
+  const onSuccess = (data) =>
+    Alert.alert(
+      `Saved Item - ${data.catalog.name}`,
+      `Item - ${data.catalog.name}\nUnit - ${data.catalog.unit}\nItem - ${data.catalog.price}`,
+      [
+        {
+          text: "New Catalog",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "View Catalog",
+          onPress: () => navigation.navigate("Catalog"),
+        },
+      ]
+    );
 
-				<Text style={styles.label}>Price</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setPrice(text)}
-					value={price}
-				/>
+  const submitCatalog = (type) => {
+    let method = "POST";
+    let url = "/catalogs";
+    if (type == "edit") {
+      method = "PUT";
+      url = `/catalogs/${catalog.id}`;
+    }
+    if (!catalog.name | !catalog.unit | !catalog.price) {
+      errorMessageDetails();
+      setError(true);
+    } else {
+      setLoading(true);
+      let data = {
+        method: method,
+        body: JSON.stringify({
+          catalog: {
+            name: catalog.name,
+            unit: catalog.unit,
+            price: catalog.price,
+          },
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      return apiRequest(url, data)
+        .then(
+          (result) => {
+            console.log("Success: ", result);
+            setError(false);
+            setCatalog({ name: "", price: "", unit: "" });
+            onSuccess(result);
+          },
+          (error) => {
+            console.log("Error: ", error);
+            setErrorMessage(error);
+            setError(true);
+          }
+        )
+        .catch((catchError) => {
+          setErrorMessage(catchError);
+          console.log("Catch: ", catchError);
+          setError(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
 
-				<Button
-					style={styles.button}
-					title="Submit Product"
-					onPress={() => postMessage()}
-				/>
-			</ScrollView>
-		</View>
-	);
+  if (!isFocused && catalog.id != "") {
+    setCatalog({
+      id: "",
+      price: "",
+      name: "",
+      unit: "KG",
+    });
+  }
+
+  return (
+    <View style={styles.container}>
+      <Header headerDisplay="Add a Product" />
+      <ScrollView>
+        {submitError ? (
+          <Text style={styles.status}>{errorMessage}</Text>
+        ) : (
+          <Text style={styles.status}>Please enter the Catalog Details</Text>
+        )}
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <CatalogForm
+            catalog={catalog}
+            handleNameChange={handleNameChange}
+            handlePriceChange={handlePriceChange}
+            handleUnitChange={handleUnitChange}
+            submitCatalog={submitCatalog}
+          />
+        )}
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingLeft: 20,
-		paddingRight: 20,
-		backgroundColor: "#fff",
-		alignItems: "flex-start",
-		justifyContent: "flex-start",
-	},
-	input: {
-		height: 40,
-		borderColor: "black",
-		borderWidth: 1,
-		fontSize: 26,
-		fontFamily: "OpenSans",
-		width: 250,
-	},
-	label: {
-		fontSize: 18,
-		fontFamily: "OpenSans",
-		paddingTop: 20,
-	},
-	req: {
-		fontFamily: "OpenSans",
-		paddingTop: 10,
-		fontStyle: "italic",
-	},
-	button: {
-		marginLeft: "auto",
-		marginRight: "auto",
-		paddingTop: 10,
-		paddingBottom: 10,
-	},
-	status: {
-		paddingTop: 10,
-		paddingBottom: 15,
-	},
+  container: {
+    flex: 1,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  input: {
+    height: 30,
+    borderColor: "black",
+    borderWidth: 1,
+    fontSize: 26,
+    fontFamily: "OpenSans",
+    width: 250,
+  },
+  label: {
+    fontSize: 18,
+    fontFamily: "OpenSans",
+    paddingTop: 20,
+  },
+  req: {
+    fontFamily: "OpenSans",
+    paddingTop: 10,
+    fontStyle: "italic",
+  },
+  button: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    paddingTop: 100,
+    paddingBottom: 100,
+  },
+  status: {
+    paddingTop: 10,
+    paddingBottom: 15,
+    color: "red",
+    fontWeight: "bold",
+  },
 });
