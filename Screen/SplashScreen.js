@@ -15,7 +15,7 @@ const SplashScreen = ({ navigation }) => {
     setTimeout(() => {
       setAnimating(false);
       AsyncStorage.getItem("user_id").then((value) => {
-        navigation.replace(value === null ? "Auth" : "HomeScreen");
+        navigation.replace(value === null ? "Auth" : "Grocery");
       });
     }, 5000);
   }, []);

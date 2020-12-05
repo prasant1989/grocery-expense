@@ -20,6 +20,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import SplashScreen from "./Screen/SplashScreen";
 import LoginScreen from "./Screen/LoginScreen";
 import RegisterScreen from "./Screen/RegisterScreen";
+import DrawerNavigator from "./components/Drawer/DrawerNavigator.js";
 
 const BottomStack = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -51,7 +52,7 @@ const Auth = () => {
   );
 };
 
-const BottomTab = () => {
+const FooterNav = ({ navigation }) => {
   return (
     <BottomStack.Navigator
       initialRouteName="Home"
@@ -118,6 +119,15 @@ const BottomTab = () => {
           ),
         }}
       />
+      <BottomStack.Screen
+        name="Profile"
+        component={DrawerNavigator}
+        options={{
+          tabBarIcon: (tabInfo) => (
+            <Icon name="user" size={18} color={tabInfo.tintColor} />
+          ),
+        }}
+      />
     </BottomStack.Navigator>
   );
 };
@@ -150,10 +160,10 @@ export default function App() {
             component={Auth}
             options={{ headerShown: false }}
           />
-          {/* Navigation Drawer as a landing page */}
+          {/* Home Screen Grocery Functions */}
           <Stack.Screen
-            name="HomeScreen"
-            component={BottomTab}
+            name="Grocery"
+            component={FooterNav}
             // Hiding header for Navigation Drawer
             options={{ headerShown: false }}
           />

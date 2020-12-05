@@ -30,11 +30,13 @@
     "react-native-tab-view": "^2.15.2",
     "react-native-table-component": "^1.2.1",
     "react-native-vector-icons": "^7.1.0",
-    "react-native-web": "^0.13.18"
+    "react-native-web": "^0.13.18",
+    "@react-navigation/drawer": "^5.11.4"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
     "babel-preset-expo": "^8.3.0"
   },
-  "private": true
+  "private": true,
+  "name": "grocery-expense"
 }

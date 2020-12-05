@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiRequest from "../api_request";
 import Loader from "./Loader";
 
@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
         if (json.success) {
           AsyncStorage.setItem("auth_token", json.auth_token);
           AsyncStorage.mergeItem("user_id", json.user_id.toString());
-          navigation.replace("HomeScreen");
+          navigation.replace("Grocery");
         } else {
           setErrorText("Please check your email id or password");
         }

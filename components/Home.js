@@ -138,7 +138,7 @@ export default function Homepage({ navigation }) {
   }
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Header headerDisplay="Mohanty Store" />
+      <Header headerDisplay="Mohanty Store" navigation={navigation} />
       <Icon
         name="cart-plus"
         size={30}
