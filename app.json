@@ -25,7 +25,7 @@
     },
     "android": {
       "package": "com.mumu1987.groceryexpenses",
-      "permissions": []
+      "permissions": ["READ_CONTACTS"]
     }
   }
 }
