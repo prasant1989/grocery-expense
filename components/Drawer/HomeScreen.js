@@ -22,10 +22,8 @@ const HomeScreen = () => {
         const { data } = await Contacts.getContactsAsync({
           fields: [Contacts.PHONE_NUMBERS, Contacts.EMAILS],
         });
-
         if (data.length > 0) {
-          console.log(data[0]);
-          setContacts(data);
+          setContacts(contacts.sort((a, b) => (a.name > b.name ? 1 : -1)));
         }
       }
     })();
@@ -51,12 +49,12 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: "#f9c2ff",
-    padding: 20,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 15,
   },
 });
 

@@ -14,13 +14,32 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CustomSidebarMenu = (props) => {
+  const [user, setUser] = React.useState({ username: "mohantystore" });
+
+  React.useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("user");
+      if (value !== null) {
+        setUser(JSON.parse(value));
+      }
+    } catch (e) {
+      console.log("Error while Getting from Async Storage", e);
+    }
+  };
+
   return (
     <View style={stylesSidebar.sideMenuContainer}>
       <View style={stylesSidebar.profileHeader}>
         <View style={stylesSidebar.profileHeaderPicCircle}>
-          <Text style={{ fontSize: 25, color: "#307ecc" }}>{"MS"}</Text>
+          <Text style={{ fontSize: 25, color: "#307ecc" }}>
+            {user.username.charAt(0)}
+          </Text>
         </View>
-        <Text style={stylesSidebar.profileHeaderText}>Mohanty Store</Text>
+        <Text style={stylesSidebar.profileHeaderText}>{user.username}</Text>
       </View>
       <View style={stylesSidebar.profileHeaderLine} />
 
@@ -59,8 +78,6 @@ const CustomSidebarMenu = (props) => {
   );
 };
 
-export default CustomSidebarMenu;
-
 const stylesSidebar = StyleSheet.create({
   sideMenuContainer: {
     width: "100%",
@@ -98,3 +115,4 @@ const stylesSidebar = StyleSheet.create({
     marginTop: 15,
   },
 });
+export default CustomSidebarMenu;

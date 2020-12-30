@@ -52,11 +52,11 @@ const DrawerNavigator = (props) => {
         },
       }}
       screenOptions={{ headerShown: false }}
-      drawerContent={CustomSidebarMenu}
+      drawerContent={(props) => <CustomSidebarMenu {...props} />}
     >
       <Drawer.Screen
         name="homeScreenStack"
-        options={{ drawerLabel: "Home Screen" }}
+        options={{ drawerLabel: "My Orders" }}
         component={homeScreenStack}
       />
     </Drawer.Navigator>

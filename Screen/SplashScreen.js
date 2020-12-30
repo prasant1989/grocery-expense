@@ -14,7 +14,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       setAnimating(false);
-      AsyncStorage.getItem("user_id").then((value) => {
+      AsyncStorage.getItem("auth_token").then((value) => {
         navigation.replace(value === null ? "Auth" : "Grocery");
       });
     }, 5000);

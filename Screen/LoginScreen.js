@@ -53,18 +53,18 @@ const LoginScreen = ({ navigation }) => {
 
     apiRequest("/users/login", data)
       .then((json) => {
-        console.log(json);
         if (json.success) {
           AsyncStorage.setItem("auth_token", json.auth_token);
-          AsyncStorage.mergeItem("user_id", json.user_id.toString());
+          AsyncStorage.mergeItem("user", JSON.stringify(json.user));
           navigation.replace("Grocery");
         } else {
           setErrorText("Please check your email id or password");
+          alert("Incorrect Email / Password");
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.error(error);
+        alert(error);
       })
       .finally(() => {
         setLoading(false);

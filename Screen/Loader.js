@@ -1,7 +1,3 @@
-// Example of Splash, Login and Sign Up in React Native
-// https://aboutreact.com/react-native-login-and-signup/
-
-// Import React and Component
 import React from "react";
 import { StyleSheet, View, Modal, ActivityIndicator } from "react-native";
 
@@ -9,14 +5,7 @@ const Loader = (props) => {
   const { loading, ...attributes } = props;
 
   return (
-    <Modal
-      transparent={true}
-      animationType={"none"}
-      visible={loading}
-      onRequestClose={() => {
-        console.log("close modal");
-      }}
-    >
+    <Modal transparent={true} animationType={"none"} visible={loading}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <ActivityIndicator
