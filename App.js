@@ -7,7 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Homepage from "./components/Home";
 import { Platform } from "react-native";
 import { useFonts } from "expo-font";
-import { AppLoading } from "expo";
+import AppLoading from "expo-app-loading";
 import OrderDetail from "./components/OrderDetail";
 import { navigationRef } from "./components/RootNavigation";
 import CartItem from "./components/CartItem";
